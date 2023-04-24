@@ -1,0 +1,41 @@
+[{
+    "id": 1,
+    "title": "Nafta Super",
+    "description": "Nafta economica con 85 octanos",
+    "price": 212,
+    "thumbnail": "super.png",
+    "code": "super",
+    "stock": 500000,
+    "status": true,
+    "category": "fuels"
+}, {
+    "id": 2,
+    "title": "Nafta Premium",
+    "description": "Nafta Premium con 92 octanos",
+    "price": 280,
+    "thumbnail": "premium.png",
+    "code": "infinia",
+    "stock": 500000,
+    "status": true,
+    "category": "fuels"
+}, {
+    "id": 3,
+    "title": "Gasoil",
+    "description": "Gasoil comun con azufre",
+    "price": 180,
+    "thumbnail": "gasoil.png",
+    "code": "gasoil",
+    "stock": 500000,
+    "status": true,
+    "category": "fuels"
+}, {
+    "id": 4,
+    "title": "Diesel Premium",
+    "description": "Diesel Premium sin azufre",
+    "price": 292,
+    "thumbnail": "diesel.png",
+    "code": "euro",
+    "stock": 500000,
+    "status": true,
+    "category": "fuels"
+}]

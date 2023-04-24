@@ -1,0 +1,102 @@
+<div class="container-fluid">
+    <div class="row">
+        <header class="bg-success text-white p-3" style="height: 25vh;">
+            <h1><b>LISTADO DE PRODUCTOS</b></h1>
+        </header>
+    </div>
+  <p>El valor actual es: <span id="valor"></span></p>
+  
+  <h1>Carga de usuarios</h1>
+    <form action="" enctype="multipart/form-data" method="">
+        <label for="title">Nombre producto: </label>
+        <input type="text" name="title" id="title">
+        
+        <label for="description">Descripcion: </label>
+        <input type="text" name="description" id="description">
+
+        <label for="price">Precio: </label>
+        <input type="number" name="price" id="price">
+
+        <label for="code">Código: </label>
+        <input type="text" name="code" id="code">
+
+        <label for="stock">Stock: </label>
+        <input type="text" name="stock" id="stock">
+
+        
+        <input type="hidden" value="true" name="status" id="status">
+
+        <label for="category">Categoria: </label>
+        <input type="text" name="category" id="category">        
+
+        <label for="thumbnail">Miniatura: </label>
+        <input type="text" name="thumbnail" id="thumbnail">       
+
+        
+        
+
+        <button id="send" type="button">Enviar</button>
+    </form>
+<hr>
+    <div class="row row-cols-1 row-cols-md-4">
+        {{#each q}}
+        <div class="col mb-4">
+            <div class="card">
+                <img src="../public/fuel.png" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.title}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                    <p class="card-text"><small class="text-muted">Cod: {{this.code}}, Precio: {{this.price}}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
+<script>
+    
+    
+
+    const botonEnviar = document.getElementById('send');
+    botonEnviar.addEventListener('click',  function(){
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const price = document.getElementById('price').value;
+    const code = document.getElementById('code').value;
+    const stock = document.getElementById('stock').value;
+    const status = document.getElementById('status').value;
+    const category = document.getElementById('category').value;
+    const thumbnail = document.getElementById('thumbnail').value;
+    
+     
+     let obj = {title: title,description:description,price:price,code:code,stock:stock,status:status,category:category,thumbnail:thumbnail}   
+     
+         ws.emit('postRequest',obj)
+    })
+    
+    const ws = io('ws://localhost:8081');
+
+
+
+    ws.on('connect', () => { // Escuchamos el evento connect para detectar cuándo logramos conectar al servidor
+        // Emitimos el evento event_cl01
+        ws.emit('event_cl01', 'Este es el primer mensaje desde el cliente 01');
+
+        // Escuchamos por el evento server_confirm desde el servidor
+        ws.on('server_confirm', (msg) => {
+            const valorHTML = document.querySelector('#valor');
+            valorHTML.textContent = msg
+
+        });
+
+
+
+
+
+
+
+    })
+</script>

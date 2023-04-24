@@ -1,0 +1,41 @@
+<div class="container-fluid">
+    <div class="row">
+        <header class="bg-success text-white p-3" style="height: 25vh;">
+            <h1><b>LISTADO DE PRODUCTOS</b></h1>
+        </header>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-4">
+        {{#each q}}
+        <div class="col mb-4">
+            <div class="card">
+                <img src="../public/fuel.png" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.title}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                    <p class="card-text"><small class="text-muted">Cod: {{this.code}}, Precio: {{this.price}}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
+<script>
+    
+    
+    const ws = io('ws://localhost:8081');
+
+    ws.on('connect', () => { // Escuchamos el evento connect para detectar cuándo logramos conectar al servidor
+        // Emitimos el evento event_cl01
+        ws.emit('event_cl01', 'Este es el primer mensaje desde el cliente 01');
+
+        // Escuchamos por el evento server_confirm desde el servidor
+        ws.on('server_confirm', (msg) => {
+            console.log(msg);
+        });
+    })
+</script>
