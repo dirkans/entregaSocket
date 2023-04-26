@@ -57,46 +57,46 @@
     </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
 <script>
-    
-    
-
     const botonEnviar = document.getElementById('send');
-    botonEnviar.addEventListener('click',  function(){
-    const title = document.getElementById('title').value;
-    const description = document.getElementById('description').value;
-    const price = document.getElementById('price').value;
-    const code = document.getElementById('code').value;
-    const stock = document.getElementById('stock').value;
-    const status = document.getElementById('status').value;
-    const category = document.getElementById('category').value;
-    const thumbnail = document.getElementById('thumbnail').value;
-    
-     
-     let obj = {title: title,description:description,price:price,code:code,stock:stock,status:status,category:category,thumbnail:thumbnail}   
-     
-         ws.emit('postRequest',obj)
+    botonEnviar.addEventListener('click', function () {
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = document.getElementById('price').value;
+        const code = document.getElementById('code').value;
+        const stock = document.getElementById('stock').value;
+        const status = document.getElementById('status').value;
+        const category = document.getElementById('category').value;
+        const thumbnail = document.getElementById('thumbnail').value;
+
+
+        let obj = {
+            title: title,
+            description: description,
+            price: price,
+            code: code,
+            stock: stock,
+            status: status,
+            category: category,
+            thumbnail: thumbnail
+        }
+
+        ws.emit('postRequest', obj)
     })
-    
+
     const ws = io('ws://localhost:8081');
 
 
 
-    ws.on('connect', () => { // Escuchamos el evento connect para detectar cuándo logramos conectar al servidor
-        // Emitimos el evento event_cl01
+    ws.on('connect', () => { 
         ws.emit('event_cl01', 'Este es el primer mensaje desde el cliente 01');
-
-        // Escuchamos por el evento server_confirm desde el servidor
+        const valorHTML = document.querySelector('#valor');
         ws.on('server_confirm', (msg) => {
-            const valorHTML = document.querySelector('#valor');
-            valorHTML.textContent = msg
-
+            console.log(msg)
         });
 
-
-
-
-
-
+        ws.on('socketProds', (prods) => {
+            console.log(prods)
+        })
 
     })
 </script>

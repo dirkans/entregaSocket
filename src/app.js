@@ -9,10 +9,10 @@ import chokidar from 'chokidar';
 
 
 //Este es el watcher de chokidar que controla cambios en el JSON para poder enviarlo por socket.io
-const watcher = chokidar.watch('./productos.json', {
-    ignored: /(^|[\/\\])\../, // ignore dotfiles
-    persistent: true
-  });
+ const watcher = chokidar.watch('./productos.json', {
+     ignored: /(^|[\/\\])\../, // ignore dotfiles
+     persistent: true
+   });
  
 
 const PUERTO = 8080;
@@ -47,10 +47,21 @@ server.engine('handlebars', engine());
 server.set('view engine', 'handlebars');
 server.set('views', './views');
 
-function wtd(){
-    return manager.refreshArray();
+ 
 
-}
+
+
+async function  wtd(){
+   const prods =  await manager.getProducts();
+   
+   const tit1 = {mensaje:"Hola mundo"}
+   
+    
+   
+    return tit1.mensaje
+   }
+
+
 
 //Eventos socket.io
 wss.on('connection', (socket) => { // Escuchamos el evento connection por nuevas conexiones de clientes
@@ -59,12 +70,13 @@ wss.on('connection', (socket) => { // Escuchamos el evento connection por nuevas
     
     function now(){
         
-socket.emit('server_confirm', wtd())
+//socket.emit('socketProds',manager.getProducts())
+socket.emit('socketProds',{nombre:"Pablo",edad:30})
     
     }
     
     // Emitimos el evento server_confirm
-    socket.emit('server_confirm', "conex ok");
+    socket.emit('server_confirm', "Socket conection success");
     
     socket.on("disconnect", (reason) => {
         console.log(`Cliente desconectado (${socket.id}): ${reason}`);
