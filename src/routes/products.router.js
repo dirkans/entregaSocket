@@ -185,7 +185,7 @@ router.delete('/:id',async(req,res)=>{
     const idBuscado = parseInt(req.params.id)
     manager.deleteProduct(idBuscado)
     res.status(200).send("Deleted ok")
-})
+})  
 
 
 export default router;

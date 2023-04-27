@@ -56,28 +56,38 @@
     const botonEnviar = document.getElementById('send');
     const listTable = document.getElementById('listTable');
     botonEnviar.addEventListener('click', function () {
-        const title = document.getElementById('title').value;
-        const description = document.getElementById('description').value;
-        const price = document.getElementById('price').value;
-        const code = document.getElementById('code').value;
-        const stock = document.getElementById('stock').value;
-        const status = document.getElementById('status').value;
-        const category = document.getElementById('category').value;
-        const thumbnail = document.getElementById('thumbnail').value;
+        const title = document.getElementById('title');
+        const description = document.getElementById('description');
+        const price = document.getElementById('price');
+        const code = document.getElementById('code');
+        const stock = document.getElementById('stock');
+        const status = document.getElementById('status');
+        const category = document.getElementById('category');
+        const thumbnail = document.getElementById('thumbnail');
 
 
         let obj = {
-            title: title,
-            description: description,
-            price: price,
-            code: code,
-            stock: stock,
-            status: status,
-            category: category,
-            thumbnail: thumbnail
+            title: title.value,
+            description: description.value,
+            price: price.value,
+            code: code.value,
+            stock: stock.value,
+            status: status.value,
+            category: category.value,
+            thumbnail: thumbnail.value
         }
 
-        ws.emit('postRequest', obj)
+        ws.emit('postRequest', obj);
+        console.log(`${obj.title} creado correctamente`);
+        //Vaciamos el form
+        title.value = "";
+        description.value = "";
+        price.value = "";
+        code.value = "";
+        stock.value = "";
+        category.value = "";
+        thumbnail.value = "";
+
         
     })
 
@@ -117,6 +127,7 @@ function refresh(listTablee) {
 
         ws.on('refreshList',(q) =>{
             refresh(q);
+            console.log
 
         })
     })
