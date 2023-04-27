@@ -4,42 +4,38 @@
             <h1><b>LISTADO DE PRODUCTOS</b></h1>
         </header>
     </div>
-  <p>El valor actual es: <span id="valor"></span></p>
+  
   
   <h1>Carga de usuarios</h1>
     <form action="" enctype="multipart/form-data" method="">
         <label for="title">Nombre producto: </label>
         <input type="text" name="title" id="title">
-        
+        <br>
         <label for="description">Descripcion: </label>
         <input type="text" name="description" id="description">
-
+        <br>
         <label for="price">Precio: </label>
         <input type="number" name="price" id="price">
-
+        <br>
         <label for="code">Código: </label>
         <input type="text" name="code" id="code">
-
+        <br>
         <label for="stock">Stock: </label>
         <input type="text" name="stock" id="stock">
-
-        
+        <br>
         <input type="hidden" value="true" name="status" id="status">
-
+        <br>
         <label for="category">Categoria: </label>
         <input type="text" name="category" id="category">        
-
+        <br>
         <label for="thumbnail">Miniatura: </label>
         <input type="text" name="thumbnail" id="thumbnail">       
-
-        
-        
-
+        <br>
         <button id="send" type="button">Enviar</button>
     </form>
 <hr>
-    <div class="row row-cols-1 row-cols-md-4">
-        {{#each q}}
+    <div id="listTable" class="row row-cols-1 row-cols-md-4">
+         {{#each q}}
         <div class="col mb-4">
             <div class="card">
                 <img src="../public/fuel.png" class="card-img-top" alt="...">
@@ -51,13 +47,14 @@
                 </div>
             </div>
         </div>
-        {{/each}}
+        {{/each}} --
 
 
     </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
 <script>
     const botonEnviar = document.getElementById('send');
+    const listTable = document.getElementById('listTable');
     botonEnviar.addEventListener('click', function () {
         const title = document.getElementById('title').value;
         const description = document.getElementById('description').value;
@@ -81,22 +78,46 @@
         }
 
         ws.emit('postRequest', obj)
+        
     })
 
     const ws = io('ws://localhost:8081');
 
 
+function refresh(listTablee) {
+    const htmlNew = listTablee.map((item, index) => {
+        return(`
+      
+  <div class="col mb-4">
+            <div class="card">
+                <img src="../public/fuel.png" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">${item.title}</h5>
+                    <p class="card-text">${item.description}</p>
+                    <p class="card-text"><small class="text-muted">Cod: ${item.code}, Precio: ${item.price}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        `)
+    }).join(" ")
+    listTable.innerHTML = htmlNew;
+}
+
 
     ws.on('connect', () => { 
-        ws.emit('event_cl01', 'Este es el primer mensaje desde el cliente 01');
-        const valorHTML = document.querySelector('#valor');
+        
         ws.on('server_confirm', (msg) => {
             console.log(msg)
         });
 
-        ws.on('socketProds', (prods) => {
-            console.log(prods)
-        })
+        ws.on('refreshList',(q) =>{
+            refresh(q);
 
+        })
     })
 </script>

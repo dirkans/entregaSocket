@@ -2,13 +2,8 @@ import express from "express";
 import {Router} from "express";
 import fs from "fs";
 const router = Router();
-import chokidar from 'chokidar';
 
 
-// const watcher = chokidar.watch('../productos.json', {
-//     ignored: /(^|[\/\\])\../, // ignore dotfiles
-//     persistent: true
-//   });
 
 const validarPost =  function(body)  {
     const tempBody = body;
@@ -144,18 +139,9 @@ router.get('/',async(req,res)=>{
 
 
 router.get('/realtimeproducts',async(req,res)=>{
-
-
     const q = await manager.getProducts();
     res.status(200).render('realTimeProducts',{q})
-    
-
-
-
-
 });
-
-
 
 
 router.get('/:pid',async(req,res)=>{
@@ -164,8 +150,6 @@ router.get('/:pid',async(req,res)=>{
     res.status(200).send(prod)
     
 });
-
-
 
 
 router.post('/',async (req,res)=>{

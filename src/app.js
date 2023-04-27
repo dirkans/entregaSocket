@@ -1,29 +1,17 @@
 import express from "express";
 import router_products from "./routes/products.router.js";
+import realtimeproducts from "./routes/realtimeproducts.router.js";
 import { engine } from 'express-handlebars';
 import { __dirname } from './utils.js';
 import { Server } from 'socket.io';
 import router_carts from './routes/carts.router.js'
 import {ProductManager, manager} from './routes/products.router.js'
-import chokidar from 'chokidar';
 
-
-//Este es el watcher de chokidar que controla cambios en el JSON para poder enviarlo por socket.io
- const watcher = chokidar.watch('./productos.json', {
-     ignored: /(^|[\/\\])\../, // ignore dotfiles
-     persistent: true
-   });
- 
 
 const PUERTO = 8080;
 const WS_PORT = 8081;
-
 const server = express();
-
-const httpServer = server.listen(WS_PORT, () => {
-    console.log(`Servidor socketio iniciado en puerto ${WS_PORT}`);
-});
-
+const httpServer = server.listen(WS_PORT, () => {console.log(`Servidor socketio iniciado en puerto ${WS_PORT}`);});
 const wss = new Server(httpServer, {
     cors: {
         origin: "http://localhost:8080",
@@ -38,59 +26,25 @@ server.use('/api/products',router_products)
 server.use('/api/carts',router_carts)
 server.use('/public', express.static(`${__dirname}/public`));
 server.use('/', router_products);
+server.use('/realtimeproducts',realtimeproducts)
 
 
-
-
-// Motor de plantillas
 server.engine('handlebars', engine());
 server.set('view engine', 'handlebars');
 server.set('views', './views');
 
- 
 
-
-
-async function  wtd(){
-   const prods =  await manager.getProducts();
-   
-   const tit1 = {mensaje:"Hola mundo"}
-   
-    
-   
-    return tit1.mensaje
-   }
-
-
-
-//Eventos socket.io
 wss.on('connection', (socket) => { // Escuchamos el evento connection por nuevas conexiones de clientes
     console.log(`Cliente conectado (${socket.id})`);
-    
-    
-    function now(){
-        
-//socket.emit('socketProds',manager.getProducts())
-socket.emit('socketProds',{nombre:"Pablo",edad:30})
-    
-    }
     
     // Emitimos el evento server_confirm
     socket.emit('server_confirm', "Socket conection success");
     
     socket.on("disconnect", (reason) => {
-        console.log(`Cliente desconectado (${socket.id}): ${reason}`);
-    });
+        console.log(`Cliente desconectado (${socket.id}): ${reason}`)});
     
-    // Escuchamos por el evento evento_cl01 desde el cliente
-    
-    socket.on('event_cl01', (data) => {
-        console.log(data);
-    });
-
-
     // Escuchamos por el evento 'postRequest' cuando pulsamos en enviar en el formulario. 
-    socket.on('postRequest', (data) => {
+    socket.on('postRequest', async (data) => {
         const title = data.title;
         const description = data.description;
         const price = data.price;
@@ -99,19 +53,12 @@ socket.emit('socketProds',{nombre:"Pablo",edad:30})
         const status = data.status;
         const category = data.category;
         const thumbnail = data.thumbnail;
-    manager.addProduct(title,description,price,code,stock,status,category,thumbnail);
-    console.log("OK")
         
+        await manager.addProduct(title,description,price,code,stock,status,category,thumbnail);
+        const q = await manager.getProducts();
+        wss.emit('refreshList',q);
     });
-
-    watcher
-    .on('change', path => now())
-
 });
-
-
-
-
 
 server.listen(PUERTO,()=>{
     console.log(`Server started on port ${PUERTO}`)
